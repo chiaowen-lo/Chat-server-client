@@ -1,19 +1,67 @@
-# Chat-server-client
+# Multi-threaded Network Chat Server
 
-the program provide a simple muti-chat system using C sockets and threads. The server.c can handle multiple client connection, and the maximum is 10 client, and the clients.c can send and receive messages.
+A multi-threaded chat room system implemented in **C** on **Linux**, utilizing **TCP sockets** and **POSIX Threads (pthreads)**. The system supports multiple clients communicating simultaneously with broadcasting and private messaging capabilities.
 
-Program Idea
-The program create a basic chatroom that multiple user can chat through the server. The server listens for connection, manages clients and broadcast messages. The server also puts all message in the share file . Clients allow connection to server, and use pthread to send and receive message simultaneously.
+## Features
 
-Written method
-	Server: Use socket to listen for client connection. When a new client connect, it will buid a new thread to deal with message send and receive. At the same time, server holds a client list, ensure message can broadcast to every client.
-	Client: Connect to server and send message. Also using a thread to listen for message to ensure the smoothnes of instant messaging.
-	Threading: Both client and server use pthread to deal with mutiple connection, ensure immediacy and stability.
+* **Multi-Client Support:** Handles up to 10 concurrent clients using a threaded architecture.
+* **Real-time Broadcasting:** Messages sent by any user are instantly broadcasted to all other connected users.
+* **Private Messaging:** Supports sending private messages to a specific user using a dedicated command.
+* **Chat History Logging:** Automatically logs all chat activity (including timestamps) to a server-side file named `board.txt`.
+* **Thread Synchronization:** Uses `pthread_mutex` to ensure thread safety when writing to the log file and broadcasting messages.
+* **Client Management:** Automatically handles client disconnection and updates the active client list.
 
-Makefile:
-	compile server and client
+## Requirements
+* Linux Environment (Ubuntu/CentOS)
+* GCC Compiler
+* Make
 
-Usage:
+## How to Build
 
-    Start server :  ./server <PORT>
-    Start client  : ./client <SERVER_IP> <PORT> <USERNAME>
+Use the included `Makefile` to compile both the server and client programs:
+
+```bash
+make
+```
+## Usage
+1. Start the Server
+Run the server on a specific port.
+
+```bash
+./server <PORT>
+# Example: ./server 8888
+```
+
+2. Start the Client
+Connect to the server from a client terminal. You need to specify the server IP, port, and a unique username.
+
+```bash
+./client <SERVER_IP> <PORT> <USERNAME>
+# Example: ./client 127.0.0.1 8888 Alice
+```
+## Chat Commands
+
+Once connected to the server, you can use the following commands to interact:
+
+### Broadcast Message
+Simply type any text and press **Enter**. The message will be visible to everyone currently connected to the server.
+
+### Private Message
+Send a message to a specific user only (whisper).
+
+* **Format:** `chat <target_name> "<message>"`
+* **Example:** `chat Bob "Hello Bob"`
+
+> **Note:** The message content **must** be enclosed in double quotes (`""`).
+
+### Exit
+Type `bye` to disconnect from the server and close the client application.
+
+```text
+bye
+```
+## Clean Build
+To remove compiled executables (server/client) and the log file for a fresh start:
+```bash
+make clean
+```
